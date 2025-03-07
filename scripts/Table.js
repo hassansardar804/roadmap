@@ -62,40 +62,40 @@ function deleteRow(id) {
   }
 }
 
-function updateRow(id) {
-  let user = finance.find((item) => item.id === id);
-  if (!user) return;
-  document.getElementById("editId").value = id;
-  document.getElementById("editDescription").value = user.description;
-  document.getElementById("editCategory").value = user.category;
-  document.getElementById("editPayment").value = user.payement;
-  document.getElementById("editModal").classList.remove("hidden");
-}
+// function updateRow(id) {
+//   let user = finance.find((item) => item.id === id);
+//   if (!user) return;
+//   document.getElementById("editId").value = id;
+//   document.getElementById("editDescription").value = user.description;
+//   document.getElementById("editCategory").value = user.category;
+//   document.getElementById("editPayment").value = user.payement;
+//   document.getElementById("editModal").classList.remove("hidden");
+// }
 
-function saveChanges() {
-  let id = parseInt(document.getElementById("editId").value);
-  let newDescription = document.getElementById("editDescription").value.trim();
-  let newCategory = document.getElementById("editCategory").value.trim();
-  let newPayement = document.getElementById("editPayment").value.trim();
+// function saveChanges() {
+//   let id = parseInt(document.getElementById("editId").value);
+//   let newDescription = document.getElementById("editDescription").value.trim();
+//   let newCategory = document.getElementById("editCategory").value.trim();
+//   let newPayement = document.getElementById("editPayment").value.trim();
 
-  if (!newDescription || !newCategory || !newPayement) {
-    alert("Invalid input");
-    return;
-  }
+//   if (!newDescription || !newCategory || !newPayement) {
+//     alert("Invalid input");
+//     return;
+//   }
 
-  let user = finance.find((item) => item.id === id);
-  if (user) {
-    user.description = newDescription;
-    user.category = newCategory;
-    user.payement = newPayement;
+//   let user = finance.find((item) => item.id === id);
+//   if (user) {
+//     user.description = newDescription;
+//     user.category = newCategory;
+//     user.payement = newPayement;
 
-    document.getElementById(`description-${id}`).innerText = newDescription;
-    document.getElementById(`category-${id}`).innerText = newCategory;
-    document.getElementById(`payement-${id}`).innerText = newPayement;
-  }
+//     document.getElementById(`description-${id}`).innerText = newDescription;
+//     document.getElementById(`category-${id}`).innerText = newCategory;
+//     document.getElementById(`payement-${id}`).innerText = newPayement;
+//   }
 
-  closeModal();
-}
+//   closeModal();
+// }
 
 function closeModal() {
   document.getElementById("editModal").classList.add("hidden");
