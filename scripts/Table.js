@@ -1,141 +1,64 @@
-// Sample data
-const finance = Array.from({ length: 20 }, (_, i) => ({
-  id: i,
-  date: new Date().toLocaleDateString(),
-  category: `${i}`,
-  description: `${i + 1}`,
-  amount: `${i + 1}`,
-  account: `${i + 1}`,
-  type: i % 2 === 0 ? "Income" : "Expense",
-  payement: i % 4 === 0 ? "Online" : "Cash"
-}));
 
-function cheakPayement() {
-  if (finance.payement === 'Cash') {
-    document.getElementById("payement-type").innerHTML = "Cash";
-    cheakPayement();
+const addTransactionBtn = document.getElementById('add-transaction-btn');
+const transactionModal = document.getElementById('transaction-modal');
+const closeModalBtn = document.getElementById('close-modal');
+const transactionForm = document.getElementById('transaction-form');
+const transactionsContainer = document.getElementById('transactions-container');
+const chartWeekBtn = document.getElementById('chart-week');
+const chartMonthBtn = document.getElementById('chart-month');
+const chartYearBtn = document.getElementById('chart-year');
+const balanceEl = document.getElementById('current-balance');
+const monthlyIncomeEl = document.getElementById('monthly-income');
+const monthlyExpensesEl = document.getElementById('monthly-expenses');
 
-  }
-}
 
-buildTable(finance);
+const financialData = {
+    weekly: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        income: [0, 0, 850, 0, 0, 170, 0],
+        expenses: [25, 87.32, 0, 95.40, 14.99, 65.80, 30]
+    },
+    monthly: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        income: [3500, 850, 170, 0],
+        expenses: [950, 320, 280, 180]
+    },
+    yearly: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        income: [4200, 4200, 4520, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        expenses: [1350, 1420, 1279, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
+};
 
-function buildTable(data) {
-  let tableBody = document.getElementById("table-body");
-  tableBody.innerHTML = "";
 
-  data.forEach((item) => {
-    let row = document.createElement("tr");
-    row.setAttribute("id", `row-${item.id}`);
 
-    row.innerHTML = `
-          <td class="border px-4 py-2">${item.id}</td>
-          <td class="border px-4 py-2" id="date-${item.id}">${item.date}</td>
-          <td class="border px-4 py-2" id="category-${item.id}">${item.category}</td>
-          <td class="border px-4 py-2" id="description-${item.id}">${item.description}</td>          
-          <td class="border px-4 py-2" id="amount-${item.id}">${item.amount}</td>
-          <td class="border px-4 py-2" id="type-${item.id}">${item.type}</td>
-          <td class="border px-4 py-2" id="payement-${item.id}">${item.payement}</td>
-      
-          <td class="border px-4 py-2">
-              <button class="bg-red-500 text-white px-3 py-1 rounded" onclick="deleteRow(${item.id})">
-                  Delete
-              </button>
-              <button class="bg-blue-500 text-white px-3 py-1 rounded" onclick="updateRow(${item.id})">
-                  Edit
-              </button>
-          </td>
-      `;
 
-    tableBody.appendChild(row);
-  });
-}
 
-function deleteRow(id) {
-  let row = document.getElementById(`row-${id}`);
-  if (row) row.remove();
 
-  // Also remove from the data array
-  const index = finance.findIndex(item => item.id === id);
-  if (index !== -1) {
-    finance.splice(index, 1);
-  }
-}
+(async function () {
+    const data = [
+        { year: 2010, count: 10 },
+        { year: 2011, count: 20 },
+        { year: 2012, count: 15 },
+        { year: 2013, count: 0 },
+        { year: 2014, count: 323 },
+        { year: 2015, count: 20 },
+        { year: 2016, count: 2 },
+    ];
 
-// function updateRow(id) {
-//   let user = finance.find((item) => item.id === id);
-//   if (!user) return;
-//   document.getElementById("editId").value = id;
-//   document.getElementById("editDescription").value = user.description;
-//   document.getElementById("editCategory").value = user.category;
-//   document.getElementById("editPayment").value = user.payement;
-//   document.getElementById("editModal").classList.remove("hidden");
-// }
-
-// function saveChanges() {
-//   let id = parseInt(document.getElementById("editId").value);
-//   let newDescription = document.getElementById("editDescription").value.trim();
-//   let newCategory = document.getElementById("editCategory").value.trim();
-//   let newPayement = document.getElementById("editPayment").value.trim();
-
-//   if (!newDescription || !newCategory || !newPayement) {
-//     alert("Invalid input");
-//     return;
-//   }
-
-//   let user = finance.find((item) => item.id === id);
-//   if (user) {
-//     user.description = newDescription;
-//     user.category = newCategory;
-//     user.payement = newPayement;
-
-//     document.getElementById(`description-${id}`).innerText = newDescription;
-//     document.getElementById(`category-${id}`).innerText = newCategory;
-//     document.getElementById(`payement-${id}`).innerText = newPayement;
-//   }
-
-//   closeModal();
-// }
-
-function closeModal() {
-  document.getElementById("editModal").classList.add("hidden");
-}
-
-// Form toggling
-document.getElementById("add").addEventListener("click", function () {
-  const formElement = document.getElementById("form");
-  formElement.classList.toggle("hidden");
-});
-
-// Transaction form submission
-document.getElementById("transactionForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  // Get form values
-  const category = document.getElementById("category").value;
-  const description = document.getElementById("description").value;
-  const amount = document.getElementById("amount").value;
-  const type = document.getElementById("type").value;
-  const paymentMethod = document.getElementById("paymentMethod").value;
-
-  // Create new transaction
-  const newTransaction = {
-    id: finance.length > 0 ? Math.max(...finance.map(item => item.id)) + 1 : 0,
-    date: new Date().toLocaleDateString(),
-    category: category,
-    description: description,
-    amount: parseFloat(amount),
-    type: type,
-    payement: paymentMethod
-  };
-
-  // Add to finance array
-  finance.push(newTransaction);
-
-  // Rebuild table
-  buildTable(finance);
-
-  // Reset form
-  document.getElementById("transactionForm").reset();
-  document.getElementById("form").classList.add("hidden");
-});
+    new Chart(
+        document.getElementById('acquisitions'),
+        {
+            type: 'line',
+            data: {
+                labels: data.map(row => row.year),
+                datasets: [
+                    {
+                        label: 'Acquisitions by year',
+                        data: data.map(row => row.count)
+                    }
+                ]
+            }
+        }
+    );
+})();
